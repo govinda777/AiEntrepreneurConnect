@@ -9,6 +9,132 @@ import datetime
 import json
 import re
 
+# Templates for AI prompts
+BLUE_OCEAN_TEMPLATE = """
+# 🌊 Estratégia Blue Ocean para {business_name}
+
+A Estratégia Blue Ocean, desenvolvida por W. Chan Kim e Renée Mauborgne, propõe que as empresas criem novos espaços de mercado inexplorados ("oceanos azuis") em vez de competir em mercados saturados ("oceanos vermelhos"). Este estudo de caso apresenta como a {business_name} pode implementar esta abordagem revolucionária no setor de {industry}.
+
+## 📊 Strategy Canvas (Tela Estratégica)
+
+A Tela Estratégica é o principal instrumento visual da Estratégia Blue Ocean, permitindo comparar a oferta da {business_name} com a dos concorrentes tradicionais em diversos fatores competitivos.
+
+## 🔄 Framework das Quatro Ações
+
+O Framework das Quatro Ações é essencial para criar uma nova curva de valor para a {business_name}:
+
+1. **Eliminar** ✂️
+   - [Lista de elementos a eliminar]
+
+2. **Reduzir** ⬇️
+   - [Lista de elementos a reduzir]
+
+3. **Aumentar** ⬆️
+   - [Lista de elementos a aumentar]
+
+4. **Criar** 🆕
+   - [Lista de elementos a criar]
+
+## 📈 Comparação de Performance Projetada
+
+O gráfico abaixo demonstra a projeção de crescimento da {business_name} comparada com empresas tradicionais do setor.
+
+## 🔍 Três Características da Estratégia Blue Ocean da {business_name}
+
+A estratégia da {business_name} apresenta as três qualidades essenciais de uma boa estratégia Blue Ocean:
+
+1. **Foco**: [Descrição de foco]
+2. **Divergência**: [Descrição de divergência]
+3. **Mensagem Clara**: [Mensagem clara]
+
+## Recomendações Estratégicas
+
+1. [Recomendação 1 com descrição e ações]
+2. [Recomendação 2 com descrição e ações]
+3. [Recomendação 3 com descrição e ações]
+
+## 📚 Conclusão
+
+[Conclusão do relatório]
+"""
+
+BUSINESS_MAP_TEMPLATE = """
+# 🗺️ Mapa Estratégico para {business_name}
+
+## Resumo Executivo
+[Resumo executivo da empresa e do setor]
+
+## Análise SWOT
+
+### Forças
+- [Lista de forças]
+
+### Fraquezas
+- [Lista de fraquezas]
+
+### Oportunidades
+- [Lista de oportunidades]
+
+### Ameaças
+- [Lista de ameaças]
+
+## Análise de Mercado
+[Análise detalhada do mercado e posicionamento]
+
+## Recomendações Estratégicas
+
+1. [Recomendação 1 com descrição e ações]
+2. [Recomendação 2 com descrição e ações]
+3. [Recomendação 3 com descrição e ações]
+
+## Projeção de Crescimento
+[Projeção de crescimento para os próximos períodos]
+
+## Conclusão
+[Conclusão do relatório com próximos passos recomendados]
+"""
+
+SEO_REPORT_TEMPLATE = """
+# 🔍 Análise SEO para {business_name}
+
+## Resumo Executivo
+[Resumo da análise e principais achados]
+
+## Pontuação SEO Geral: [score]/100
+
+## Análise de Palavras-chave
+[Análise detalhada das palavras-chave principais]
+
+## Fontes de Tráfego
+[Análise das principais fontes de tráfego]
+
+## Oportunidades de Otimização
+
+1. **[Área 1]**
+   - Impacto: [valor]/100
+   - Dificuldade: [valor]/100
+   - [Recomendações específicas]
+
+2. **[Área 2]**
+   - Impacto: [valor]/100
+   - Dificuldade: [valor]/100
+   - [Recomendações específicas]
+
+3. **[Área 3]**
+   - Impacto: [valor]/100
+   - Dificuldade: [valor]/100
+   - [Recomendações específicas]
+
+## Recomendações Estratégicas
+
+1. [Recomendação 1 com descrição e ações]
+2. [Recomendação 2 com descrição e ações]
+3. [Recomendação 3 com descrição e ações]
+
+## Conclusão
+[Conclusão da análise com projeção de resultados após implementação]
+"""
+
 def set_page_config():
     """Configure the page settings for the Streamlit app"""
     st.set_page_config(
