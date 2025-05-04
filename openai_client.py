@@ -207,13 +207,24 @@ def generate_blue_ocean_strategy(form_data):
     
     If OpenAI is not available, it returns simulated data.
     """
+    # Extract form data
+    business_name = form_data.get('business_name', 'Empresa')
+    products_services = form_data.get('products_services', 'Software')
+    competitors = form_data.get('competitors', 'Concorrentes')
+    target_customers = form_data.get('target_customers', 'Clientes')
+    differentials = form_data.get('differentials', 'Diferenciais')
+    challenges = form_data.get('challenges', 'Desafios')
+    goals = form_data.get('goals', 'Objetivos')
+    strengths = form_data.get('strengths', 'Pontos fortes')
+    limitations = form_data.get('limitations', 'Limitações')
+    
     # If OpenAI is not available, return simulated data immediately
     if not OPENAI_AVAILABLE:
-        business_name = form_data.get('business_name', 'Empresa')
-        products_services = form_data.get('products_services', 'Software')
-        
         # Simulate API analysis with a delay to make it feel realistic
         time.sleep(1.5)
+        
+        # Get industry name from products/services
+        industry = products_services.split(',')[0] if isinstance(products_services, str) and ',' in products_services else products_services
         
         return {
             "eliminate": [
@@ -276,19 +287,21 @@ def generate_blue_ocean_strategy(form_data):
                 }
             ]
         }
-    # Create a prompt with the form data
-    business_name = form_data.get('business_name', 'Empresa')
-    products_services = form_data.get('products_services', 'Software')
-    competitors = form_data.get('competitors', 'Concorrentes')
-    target_customers = form_data.get('target_customers', 'Clientes')
-    differentials = form_data.get('differentials', 'Diferenciais')
-    challenges = form_data.get('challenges', 'Desafios')
-    goals = form_data.get('goals', 'Objetivos')
-    strengths = form_data.get('strengths', 'Pontos fortes')
-    limitations = form_data.get('limitations', 'Limitações')
+    
+    # Get industry from products/services
+    industry = products_services.split(',')[0] if isinstance(products_services, str) and ',' in products_services else products_services
+    
+    # Import the template for Blue Ocean strategy
+    from utils import BLUE_OCEAN_TEMPLATE
+    
+    # Format the template with business data to show as an example
+    blue_ocean_example = BLUE_OCEAN_TEMPLATE.format(
+        business_name=business_name,
+        industry=industry
+    )
     
     prompt = f"""
-    Você é um consultor especialista na metodologia Blue Ocean Strategy. Analise os dados da empresa abaixo e gere uma estratégia Blue Ocean completa.
+    Você é um consultor especialista na metodologia Blue Ocean Strategy. Analise os dados da empresa abaixo e gere uma estratégia Blue Ocean completa seguindo a estrutura do exemplo fornecido.
     
     DADOS DA EMPRESA:
     - Nome: {business_name}
@@ -300,6 +313,9 @@ def generate_blue_ocean_strategy(form_data):
     - Objetivos: {goals}
     - Pontos fortes: {strengths}
     - Limitações: {limitations}
+    
+    EXEMPLO DE FORMATO DE RELATÓRIO:
+    {blue_ocean_example}
     
     TAREFA:
     Gere uma estratégia Blue Ocean completa, incluindo:
@@ -527,7 +543,7 @@ def analyze_seo(form_data):
                 }
             ]
         }
-    # Create a prompt with the form data
+    # Extract form data
     business_name = form_data.get('business_name', 'Empresa')
     website_url = form_data.get('website_url', 'https://exemplo.com')
     keywords = form_data.get('keywords', 'palavras-chave')
@@ -537,8 +553,19 @@ def analyze_seo(form_data):
     goals = form_data.get('goals', 'objetivos')
     target_audience = form_data.get('target_audience', 'público-alvo')
     
+    # Import the template for SEO report
+    from utils import SEO_REPORT_TEMPLATE
+    
+    # Format the template with business data to show as an example
+    seo_example = SEO_REPORT_TEMPLATE.format(
+        business_name=business_name
+    )
+    
     prompt = f"""
-    Você é um especialista em SEO que deve analisar os dados do site abaixo e gerar insights e recomendações estratégicas.
+    Você é um especialista em SEO que deve analisar os dados do site abaixo e gerar insights e recomendações estratégicas, seguindo o formato do exemplo fornecido.
+    
+    EXEMPLO DE FORMATO DE RELATÓRIO:
+    {seo_example}
     
     DADOS DO SITE:
     - Nome da empresa: {business_name}
