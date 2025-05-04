@@ -10,13 +10,14 @@ from utils import (
     generate_bar_chart, 
     generate_line_chart
 )
+from api_client import AIClient
 
 def generate_report(report_type, form_data):
     """
     Generate a report based on the report type and form data
     
-    In a real implementation, this would call an AI service to analyze the data
-    and generate insights. For this demo, we'll simulate the report generation.
+    This uses OpenAI's API via the AIClient to generate intelligent insights
+    based on the user's input data.
     """
     
     # Create report ID and timestamp
@@ -30,13 +31,40 @@ def generate_report(report_type, form_data):
         "seo": "Relatório SEO"
     }.get(report_type, "Relatório Personalizado")
     
+    # Initialize AI client
+    ai_client = AIClient()
+    
     # Generate the appropriate report based on type
     if report_type == "business_map":
-        report = generate_business_map_report(report_id, generated_date, form_data)
+        # Use AI to analyze business data
+        try:
+            ai_analysis = ai_client.analyze_business(form_data)
+            # Generate the report with AI-powered insights
+            report = generate_business_map_report(report_id, generated_date, form_data, ai_analysis)
+        except Exception as e:
+            st.error(f"Erro ao gerar análise de IA: {e}")
+            report = generate_business_map_report(report_id, generated_date, form_data)
+    
     elif report_type == "blue_ocean":
-        report = generate_blue_ocean_report(report_id, generated_date, form_data)
+        # Use AI to generate Blue Ocean strategy
+        try:
+            ai_analysis = ai_client.generate_blue_ocean_strategy(form_data)
+            # Generate the report with AI-powered insights
+            report = generate_blue_ocean_report(report_id, generated_date, form_data, ai_analysis)
+        except Exception as e:
+            st.error(f"Erro ao gerar estratégia Blue Ocean: {e}")
+            report = generate_blue_ocean_report(report_id, generated_date, form_data)
+    
     elif report_type == "seo":
-        report = generate_seo_report(report_id, generated_date, form_data)
+        # Use AI to analyze SEO data
+        try:
+            ai_analysis = ai_client.analyze_seo(form_data)
+            # Generate the report with AI-powered insights
+            report = generate_seo_report(report_id, generated_date, form_data, ai_analysis)
+        except Exception as e:
+            st.error(f"Erro ao gerar análise SEO: {e}")
+            report = generate_seo_report(report_id, generated_date, form_data)
+    
     else:
         st.error(f"Tipo de relatório desconhecido: {report_type}")
         return None
@@ -44,8 +72,8 @@ def generate_report(report_type, form_data):
     # Return the complete report
     return report
 
-def generate_business_map_report(report_id, generated_date, form_data):
-    """Generate a Business Map report"""
+def generate_business_map_report(report_id, generated_date, form_data, ai_analysis=None):
+    """Generate a Business Map report with optional AI analysis data"""
     
     # Extract form data
     business_name = form_data.get('business_name', 'Empresa')
@@ -53,6 +81,84 @@ def generate_business_map_report(report_id, generated_date, form_data):
     business_model = form_data.get('business_model', 'SaaS')
     monthly_revenue = form_data.get('monthly_revenue', 50000)
     employees = form_data.get('employees', 10)
+    
+    # Set up default recommendations and SWOT data
+    strengths = [
+        f"Posicionamento único no mercado de {industry}",
+        "Equipe altamente qualificada e comprometida",
+        "Produto com diferenciais claros"
+    ]
+    
+    weaknesses = [
+        "Processos internos que podem ser otimizados",
+        "Dependência de poucos canais de aquisição",
+        "Escalabilidade limitada no modelo atual"
+    ]
+    
+    opportunities = [
+        "Expandir para mercados adjacentes",
+        "Desenvolver novas linhas de produtos/serviços",
+        f"Parcerias estratégicas com outros players de {industry}"
+    ]
+    
+    threats = [
+        "Novos entrantes com modelos disruptivos",
+        "Mudanças regulatórias no setor",
+        "Pressão por redução de preços"
+    ]
+    
+    recommendations = [
+        {
+            "title": "Otimização de Processos Internos",
+            "description": (
+                f"Baseado na análise do seu modelo de negócio {business_model}, identificamos oportunidades "
+                f"para melhorar a eficiência operacional através da automação de processos repetitivos e "
+                f"da implementação de metodologias ágeis."
+            ),
+            "action_items": [
+                "Implementar um sistema de gestão de processos",
+                "Treinar a equipe em metodologias ágeis",
+                "Automatizar relatórios e análises de desempenho"
+            ]
+        },
+        {
+            "title": "Expansão de Portfolio",
+            "description": (
+                f"Para empresas do setor de {industry}, existe uma tendência de crescimento em soluções complementares. "
+                f"Recomendamos explorar novos produtos/serviços que se integrem ao seu atual portfólio."
+            ),
+            "action_items": [
+                "Realizar pesquisa de mercado para identificar necessidades não atendidas",
+                "Desenvolver um MVP (Minimum Viable Product) para testar novas ideias",
+                "Estabelecer parcerias estratégicas para expandir alcance"
+            ]
+        },
+        {
+            "title": "Estratégia de Crescimento Sustentável",
+            "description": (
+                f"Considerando seu faturamento atual de R$ {monthly_revenue:,.2f} e estrutura de {employees} colaboradores, "
+                f"recomendamos uma estratégia de crescimento escalonável que mantenha a qualidade enquanto expande operações."
+            ),
+            "action_items": [
+                "Desenvolver um plano de contratações estratégicas",
+                "Implementar indicadores de desempenho (KPIs) alinhados aos objetivos de crescimento",
+                "Revisar a estrutura de custos para identificar eficiências"
+            ]
+        }
+    ]
+    
+    # Override with AI analysis if available
+    if ai_analysis:
+        if 'strengths' in ai_analysis:
+            strengths = ai_analysis['strengths']
+        if 'weaknesses' in ai_analysis:
+            weaknesses = ai_analysis['weaknesses']
+        if 'opportunities' in ai_analysis:
+            opportunities = ai_analysis['opportunities']
+        if 'threats' in ai_analysis:
+            threats = ai_analysis['threats']
+        if 'recommendations' in ai_analysis:
+            recommendations = ai_analysis['recommendations']
     
     # Create report structure
     report = {
@@ -68,45 +174,11 @@ def generate_business_map_report(report_id, generated_date, form_data):
             f"Análises de mercado e operacionais revelam oportunidades para otimização e expansão estratégica."
         ),
         "visualizations": {},
-        "recommendations": [
-            {
-                "title": "Otimização de Processos Internos",
-                "description": (
-                    f"Baseado na análise do seu modelo de negócio {business_model}, identificamos oportunidades "
-                    f"para melhorar a eficiência operacional através da automação de processos repetitivos e "
-                    f"da implementação de metodologias ágeis."
-                ),
-                "action_items": [
-                    "Implementar um sistema de gestão de processos",
-                    "Treinar a equipe em metodologias ágeis",
-                    "Automatizar relatórios e análises de desempenho"
-                ]
-            },
-            {
-                "title": "Expansão de Portfolio",
-                "description": (
-                    f"Para empresas do setor de {industry}, existe uma tendência de crescimento em soluções complementares. "
-                    f"Recomendamos explorar novos produtos/serviços que se integrem ao seu atual portfólio."
-                ),
-                "action_items": [
-                    "Realizar pesquisa de mercado para identificar necessidades não atendidas",
-                    "Desenvolver um MVP (Minimum Viable Product) para testar novas ideias",
-                    "Estabelecer parcerias estratégicas para expandir alcance"
-                ]
-            },
-            {
-                "title": "Estratégia de Crescimento Sustentável",
-                "description": (
-                    f"Considerando seu faturamento atual de R$ {monthly_revenue:,.2f} e estrutura de {employees} colaboradores, "
-                    f"recomendamos uma estratégia de crescimento escalonável que mantenha a qualidade enquanto expande operações."
-                ),
-                "action_items": [
-                    "Desenvolver um plano de contratações estratégicas",
-                    "Implementar indicadores de desempenho (KPIs) alinhados aos objetivos de crescimento",
-                    "Revisar a estrutura de custos para identificar eficiências"
-                ]
-            }
-        ],
+        "strengths": strengths,
+        "weaknesses": weaknesses,
+        "opportunities": opportunities,
+        "threats": threats,
+        "recommendations": recommendations,
         "conclusion": (
             f"O mapeamento estratégico de {business_name} revela uma empresa com fundamentos sólidos e potencial significativo "
             f"para crescimento no setor de {industry}. A implementação das recomendações propostas pode resultar em um aumento "
@@ -162,8 +234,8 @@ def generate_business_map_report(report_id, generated_date, form_data):
     
     return report
 
-def generate_blue_ocean_report(report_id, generated_date, form_data):
-    """Generate a Blue Ocean Strategy report"""
+def generate_blue_ocean_report(report_id, generated_date, form_data, ai_analysis=None):
+    """Generate a Blue Ocean Strategy report with optional AI analysis data"""
     
     # Extract form data
     business_name = form_data.get('business_name', 'Empresa')
@@ -171,6 +243,103 @@ def generate_blue_ocean_report(report_id, generated_date, form_data):
     competitors = form_data.get('competitors', 'Empresa A, Empresa B')
     target_customers = form_data.get('target_customers', 'Pequenas e Médias Empresas')
     differentials = form_data.get('differentials', 'Facilidade de uso, Suporte personalizado')
+    
+    # Default strategy values
+    eliminate = [
+        "Funcionalidades complexas raramente utilizadas",
+        "Processos burocráticos que atrasam entregas",
+        "Dependência de intermediários na cadeia de valor"
+    ]
+    
+    reduce = [
+        "Custos operacionais através de automação",
+        "Tempo de implementação/entrega",
+        "Barreiras de adoção para novos clientes"
+    ]
+    
+    raise_values = [
+        "Experiência do usuário e facilidade de uso",
+        "Transparência e comunicação com clientes",
+        "Valor percebido do produto/serviço"
+    ]
+    
+    create = [
+        "Modelo de precificação baseado em resultados",
+        "Comunidade de usuários e co-criação",
+        "Integração perfeita com o ecossistema do cliente"
+    ]
+    
+    # Default canvas values
+    canvas_factors = [
+        "Preço", 
+        "Facilidade de uso", 
+        "Personalização", 
+        "Suporte", 
+        "Integração", 
+        "Inovação"
+    ]
+    your_values = [6, 9, 10, 8, 9, 10]
+    industry_values = [8, 5, 4, 6, 5, 6]
+    
+    recommendations = [
+        {
+            "title": "Eliminar fatores de competição tradicional",
+            "description": (
+                f"Para criar um oceano azul, recomendamos eliminar elementos que o setor toma como certos mas que não "
+                f"agregam valor real para {target_customers}. Isso inclui processos complexos, funcionalidades raramente "
+                f"utilizadas e intermediários na cadeia de valor."
+            ),
+            "action_items": [
+                "Mapear e eliminar recursos pouco utilizados no produto",
+                "Simplificar o processo de onboarding de novos clientes",
+                "Reduzir dependência de canais tradicionais de distribuição"
+            ]
+        },
+        {
+            "title": "Criar novos fatores de valor",
+            "description": (
+                f"Identificamos oportunidades para {business_name} criar elementos inovadores nunca oferecidos no setor. "
+                f"Isso inclui experiências personalizadas, modelos de precificação disruptivos e novas formas de interação "
+                f"com o produto."
+            ),
+            "action_items": [
+                "Desenvolver sistema de personalização baseado em IA",
+                "Introduzir modelo de precificação baseado em resultados",
+                "Criar plataforma de co-criação com clientes"
+            ]
+        },
+        {
+            "title": "Redefinir a experiência do cliente",
+            "description": (
+                f"Com base nos diferencias atuais ({differentials}), recomendamos redefinir completamente a experiência "
+                f"do cliente, focando nos momentos-chave da jornada onde é possível criar valor excepcional."
+            ),
+            "action_items": [
+                "Mapear a jornada completa do cliente identificando pontos de frustração",
+                "Reimaginar o processo de suporte e sucesso do cliente",
+                "Implementar sistema de feedback contínuo e adaptação rápida"
+            ]
+        }
+    ]
+    
+    # Override with AI analysis if available
+    if ai_analysis:
+        if 'eliminate' in ai_analysis:
+            eliminate = ai_analysis['eliminate']
+        if 'reduce' in ai_analysis:
+            reduce = ai_analysis['reduce']
+        if 'raise' in ai_analysis:
+            raise_values = ai_analysis['raise']
+        if 'create' in ai_analysis:
+            create = ai_analysis['create']
+        if 'canvas_factors' in ai_analysis:
+            canvas_factors = ai_analysis['canvas_factors']
+        if 'your_values' in ai_analysis:
+            your_values = ai_analysis['your_values']
+        if 'industry_values' in ai_analysis:
+            industry_values = ai_analysis['industry_values']
+        if 'recommendations' in ai_analysis:
+            recommendations = ai_analysis['recommendations']
     
     # Create report structure
     report = {
@@ -313,8 +482,8 @@ def generate_blue_ocean_report(report_id, generated_date, form_data):
     
     return report
 
-def generate_seo_report(report_id, generated_date, form_data):
-    """Generate a SEO report"""
+def generate_seo_report(report_id, generated_date, form_data, ai_analysis=None):
+    """Generate a SEO report with optional AI analysis data"""
     
     # Extract form data
     website_url = form_data.get('website_url', 'https://example.com')
@@ -322,6 +491,126 @@ def generate_seo_report(report_id, generated_date, form_data):
     keywords = form_data.get('keywords', 'software, gestão, empresas')
     competitors = form_data.get('competitors', 'competitor1.com, competitor2.com')
     goals = form_data.get('goals', 'Aumentar tráfego orgânico e conversões')
+    
+    # Default SEO data
+    overall_score = 65  # Out of 100
+    
+    # Parse keywords
+    keyword_list = [k.strip() for k in keywords.split(',') if k.strip()]
+    if not keyword_list:
+        keyword_list = ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"]
+    
+    # Ensure we have at least 5 keywords
+    while len(keyword_list) < 5:
+        keyword_list.append(f"keyword{len(keyword_list)+1}")
+    
+    keywords_data = {
+        "keywords": keyword_list[:5],  # Take first 5 keywords
+        "positions": [4, 12, 18, 7, 22],
+        "search_volumes": [2400, 1300, 880, 3200, 590],
+        "competition": [0.75, 0.45, 0.3, 0.8, 0.25]
+    }
+    
+    traffic_sources = {
+        "sources": ["Organic", "Direct", "Social", "Referral", "Paid"],
+        "percentages": [35, 25, 20, 15, 5]
+    }
+    
+    optimization_opportunities = [
+        {
+            "area": "Content",
+            "impact": 85,
+            "difficulty": 40,
+            "recommendations": [
+                "Create in-depth content targeting main keywords",
+                "Optimize meta titles and descriptions",
+                "Improve internal linking structure"
+            ]
+        },
+        {
+            "area": "Technical",
+            "impact": 65,
+            "difficulty": 70,
+            "recommendations": [
+                "Improve page loading speed",
+                "Fix mobile usability issues",
+                "Implement schema markup"
+            ]
+        },
+        {
+            "area": "Backlinks",
+            "impact": 75,
+            "difficulty": 80,
+            "recommendations": [
+                "Develop a link building strategy",
+                "Create linkable assets (infographics, studies)",
+                "Establish industry partnerships"
+            ]
+        },
+        {
+            "area": "Local SEO",
+            "impact": 55,
+            "difficulty": 30,
+            "recommendations": [
+                "Optimize Google Business Profile",
+                "Ensure NAP consistency",
+                "Generate local reviews"
+            ]
+        },
+        {
+            "area": "Mobile",
+            "impact": 80,
+            "difficulty": 50,
+            "recommendations": [
+                "Improve mobile page speed",
+                "Ensure responsive design",
+                "Optimize for mobile-first indexing"
+            ]
+        }
+    ]
+    
+    recommendations = [
+        {
+            "title": "Otimização de Conteúdo",
+            "description": f"Criar e otimizar conteúdo para as principais palavras-chave identificadas para {website_url}.",
+            "action_items": [
+                "Desenvolver plano de conteúdo focado nas 5 palavras-chave principais",
+                "Otimizar metadados das páginas existentes",
+                "Melhorar estrutura de links internos"
+            ]
+        },
+        {
+            "title": "Melhorias Técnicas",
+            "description": "Resolver problemas técnicos que afetam o desempenho do site nos motores de busca.",
+            "action_items": [
+                "Melhorar velocidade de carregamento das páginas",
+                "Corrigir problemas de usabilidade móvel",
+                "Implementar marcação de esquema (schema markup)"
+            ]
+        },
+        {
+            "title": "Estratégia de Backlinks",
+            "description": "Desenvolver links de qualidade para aumentar a autoridade do domínio.",
+            "action_items": [
+                "Criar conteúdo link-worthy (infográficos, estudos)",
+                "Estabelecer parcerias no setor",
+                "Monitorar perfil de backlinks regularmente"
+            ]
+        }
+    ]
+    
+    # Override with AI analysis if available
+    if ai_analysis:
+        if 'overall_score' in ai_analysis:
+            overall_score = ai_analysis['overall_score']
+        if 'keywords_data' in ai_analysis:
+            keywords_data = ai_analysis['keywords_data']
+        if 'traffic_sources' in ai_analysis:
+            traffic_sources = ai_analysis['traffic_sources']
+        if 'optimization_opportunities' in ai_analysis:
+            optimization_opportunities = ai_analysis['optimization_opportunities']
+        if 'recommendations' in ai_analysis:
+            recommendations = ai_analysis['recommendations']
     
     # Create report structure
     report = {
