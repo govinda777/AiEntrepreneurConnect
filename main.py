@@ -9,6 +9,7 @@ import os
 # Import custom modules
 from wallet_connector import connect_wallet, check_token_balance, disconnect_wallet
 from dashboard import render_dashboard
+from metro_dashboard import render_metro_dashboard
 from forms import (
     render_business_map_form, 
     render_blue_ocean_form, 
@@ -104,7 +105,7 @@ def show_landing_page():
 def show_dashboard():
     """Display the main dashboard when user is connected"""
     # Navigation tabs
-    tab1, tab2 = st.tabs(["Gerar Novo Relatório", "Meus Relatórios"])
+    tab1, tab2, tab3 = st.tabs(["Gerar Novo Relatório", "Meus Relatórios", "Dashboard Metro"])
     
     with tab1:
         st.header("Selecione o tipo de relatório")
@@ -145,6 +146,15 @@ def show_dashboard():
             st.info("Você ainda não gerou nenhum relatório. Gere seu primeiro relatório na aba 'Gerar Novo Relatório'.")
         else:
             render_dashboard()
+    
+    with tab3:
+        st.header("Dashboard de Insights do Mercado")
+        st.write("Visualize insights consolidados de todos os seus relatórios em um único painel.")
+        
+        if not st.session_state.reports:
+            st.info("Você ainda não gerou nenhum relatório. Gere seu primeiro relatório na aba 'Gerar Novo Relatório' para obter insights de mercado.")
+        else:
+            render_metro_dashboard()
 
 def show_report_form():
     """Display the appropriate report form based on user selection"""
