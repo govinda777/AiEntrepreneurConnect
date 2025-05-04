@@ -79,20 +79,81 @@ def render_metro_dashboard():
     st.title("Dashboard de Insights de Mercado")
     st.write("Análise agregada de todos os relatórios gerados")
     
-    # Collect data from all reports
-    business_map_reports = [r for r in st.session_state.reports if r['report_type'] == 'business_map']
-    blue_ocean_reports = [r for r in st.session_state.reports if r['report_type'] == 'blue_ocean']
-    seo_reports = [r for r in st.session_state.reports if r['report_type'] == 'seo']
+    # Add date filter in sidebar
+    st.sidebar.header("Filtros")
+    
+    # Get earliest and latest report dates
+    report_dates = []
+    for report in st.session_state.reports:
+        try:
+            date_str = report['generated_date']
+            # Parse date assuming format is DD/MM/YYYY HH:MM
+            report_dates.append(datetime.strptime(date_str, "%d/%m/%Y %H:%M"))
+        except:
+            # Skip if can't parse date
+            pass
+    
+    # Initialize filtered_reports to all reports by default
+    filtered_reports = st.session_state.reports.copy()
+    
+    # Default date range (if we have dates)
+    if report_dates:
+        min_date = min(report_dates).date()
+        max_date = max(report_dates).date()
+        
+        start_date = st.sidebar.date_input(
+            "Data Inicial",
+            min_date,
+            min_value=min_date,
+            max_value=max_date
+        )
+        
+        end_date = st.sidebar.date_input(
+            "Data Final",
+            max_date,
+            min_value=start_date,
+            max_value=max_date
+        )
+        
+        # Filter reports by date
+        filtered_reports = []
+        for report in st.session_state.reports:
+            try:
+                report_date = datetime.strptime(report['generated_date'], "%d/%m/%Y %H:%M").date()
+                if start_date <= report_date <= end_date:
+                    filtered_reports.append(report)
+            except:
+                # Include reports with unparseable dates
+                filtered_reports.append(report)
+        
+        # Show filter information
+        if len(filtered_reports) < len(st.session_state.reports):
+            st.sidebar.info(f"Exibindo {len(filtered_reports)} de {len(st.session_state.reports)} relatórios")
+    
+    # Use filtered reports
+    business_map_reports = [r for r in filtered_reports if r['report_type'] == 'business_map']
+    blue_ocean_reports = [r for r in filtered_reports if r['report_type'] == 'blue_ocean']
+    seo_reports = [r for r in filtered_reports if r['report_type'] == 'seo']
+    
+    # Data already collected and filtered above
     
     # ==== Top metrics section ====
     st.subheader("Métricas Principais")
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
+        # Use filtered reports count if we have filters, otherwise use total count
+        if report_dates and len(filtered_reports) < len(st.session_state.reports):
+            reports_count = len(filtered_reports)
+            display_name = "Relatórios no Período"
+        else:
+            reports_count = len(st.session_state.reports)
+            display_name = "Total de Relatórios"
+            
         st.markdown(f"""
         <div class="metro-tile metro-tile-blue">
-            <h3>Total de Relatórios</h3>
-            <p>{len(st.session_state.reports)}</p>
+            <h3>{display_name}</h3>
+            <p>{reports_count}</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -124,12 +185,17 @@ def render_metro_dashboard():
         """, unsafe_allow_html=True)
     
     with col4:
-        # Count total recommendations across all reports
-        total_recs = sum([len(r.get('recommendations', [])) for r in st.session_state.reports])
+        # Count total recommendations across filtered reports
+        if report_dates and len(filtered_reports) < len(st.session_state.reports):
+            total_recs = sum([len(r.get('recommendations', [])) for r in filtered_reports])
+            display_name = "Recomendações no Período"
+        else:
+            total_recs = sum([len(r.get('recommendations', [])) for r in st.session_state.reports])
+            display_name = "Recomendações Geradas"
         
         st.markdown(f"""
         <div class="metro-tile metro-tile-orange">
-            <h3>Recomendações Geradas</h3>
+            <h3>{display_name}</h3>
             <p>{total_recs}</p>
         </div>
         """, unsafe_allow_html=True)
@@ -342,9 +408,9 @@ def render_metro_dashboard():
     # ==== Market Insights section ====
     st.subheader("Insights e Oportunidades de Mercado")
     
-    # Collect recommendations from all reports
+    # Collect recommendations from filtered reports
     all_recommendations = []
-    for report in st.session_state.reports:
+    for report in filtered_reports:
         if 'recommendations' in report:
             all_recommendations.extend(report['recommendations'])
     
@@ -427,11 +493,11 @@ def render_metro_dashboard():
     # For demonstration, create simulated growth projections
     baseline_growth = [100]
     for i in range(1, len(quarters)):
-        baseline_growth.append(baseline_growth[-1] * (1 + 0.05))  # 5% quarter-over-quarter growth
+        baseline_growth.append(int(baseline_growth[-1] * (1 + 0.05)))  # 5% quarter-over-quarter growth
     
     optimized_growth = [100]
     for i in range(1, len(quarters)):
-        optimized_growth.append(optimized_growth[-1] * (1 + 0.12))  # 12% quarter-over-quarter growth
+        optimized_growth.append(int(optimized_growth[-1] * (1 + 0.12)))  # 12% quarter-over-quarter growth
     
     fig = go.Figure()
     
