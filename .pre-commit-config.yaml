@@ -3,7 +3,17 @@ repos:
     hooks:
     -   id: pytest-e2e
         name: pytest-e2e
-        entry: pytest tests/e2e
+        entry: |
+            #!/bin/bash
+            # Inicia a aplicação Streamlit em background
+            streamlit run main.py &
+            STREAMLIT_PID=$!
+            # Aguarda a aplicação iniciar
+            sleep 5
+            # Roda os testes
+            pytest tests/e2e
+            # Mata o processo da aplicação
+            kill $STREAMLIT_PID
         language: system
         pass_filenames: false
         always_run: true
