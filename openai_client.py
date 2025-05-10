@@ -223,9 +223,6 @@ def generate_blue_ocean_strategy(form_data):
         # Simulate API analysis with a delay to make it feel realistic
         time.sleep(1.5)
         
-        # Get industry name from products/services
-        industry = products_services.split(',')[0] if isinstance(products_services, str) and ',' in products_services else products_services
-        
         return {
             "eliminate": [
                 "Funcionalidades complexas raramente utilizadas",
@@ -291,19 +288,18 @@ def generate_blue_ocean_strategy(form_data):
     # Get industry from products/services
     industry = products_services.split(',')[0] if isinstance(products_services, str) and ',' in products_services else products_services
     
-    # Import the template for Blue Ocean strategy
-    from utils import BLUE_OCEAN_TEMPLATE
-    
-    # Format the template with business data to show as an example
-    blue_ocean_example = BLUE_OCEAN_TEMPLATE.format(
-        business_name=business_name,
-        industry=industry
-    )
+    # Read the Blue Ocean template markdown file
+    try:
+        with open('reports/templates/BLUE_OCEAN.md', 'r', encoding='utf-8') as f:
+            template = f.read()
+    except Exception as e:
+        print(f"Error reading Blue Ocean template: {e}")
+        template = "Template não encontrado"
     
     prompt = f"""
-    Você é um consultor especialista na metodologia Blue Ocean Strategy. Analise os dados da empresa abaixo e gere uma estratégia Blue Ocean completa seguindo a estrutura do exemplo fornecido.
+    Você é um consultor especialista na metodologia Blue Ocean Strategy. Analise os dados da empresa abaixo e gere uma estratégia Blue Ocean completa seguindo a estrutura do template fornecido.
     
-    DADOS DA EMPRESA:
+    ## DADOS DA EMPRESA:
     - Nome: {business_name}
     - Produtos/serviços: {products_services}
     - Concorrentes: {competitors}
@@ -314,10 +310,10 @@ def generate_blue_ocean_strategy(form_data):
     - Pontos fortes: {strengths}
     - Limitações: {limitations}
     
-    EXEMPLO DE FORMATO DE RELATÓRIO:
-    {blue_ocean_example}
+    ## TEMPLATE DE REFERÊNCIA:
+    {template}
     
-    TAREFA:
+    ## TAREFA:
     Gere uma estratégia Blue Ocean completa, incluindo:
     1. Framework ERRC (Eliminar-Reduzir-Aumentar-Criar)
     2. Fatores para o Strategy Canvas (Tela Estratégica)
@@ -347,7 +343,7 @@ def generate_blue_ocean_strategy(form_data):
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": "Você é um consultor especialista em Blue Ocean Strategy."},
                 {"role": "user", "content": prompt}

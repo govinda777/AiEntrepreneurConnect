@@ -159,7 +159,7 @@ Clone o repositório e instale as dependências:
 ```bash
 git clone https://github.com/seu-usuario/aiforentrepreneursconnect.git
 cd aiforentrepreneursconnect
-pip install -r requirements.txt
+pip install -r requirements.txt --index-url https://pypi.org/
 ```
 
 ## ⚙️ Configuração
