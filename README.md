@@ -191,7 +191,7 @@ pip install -r requirements.txt --index-url https://pypi.org/
 
 ## 🖥️ Uso
 
-1. Acesse a aplicação no navegador (por padrão: http://localhost:5000)
+1. Acesse a aplicação no navegador (por padrão: http://localhost:5001)
 2. Conecte-se usando sua carteira Web3
 3. Selecione o tipo de relatório desejado
 4. Preencha o formulário com dados do seu negócio

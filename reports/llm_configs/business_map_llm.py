@@ -1,13 +1,14 @@
 from typing import Dict, Any
 from .base_llm import ReportLLM, LLMConfig
 import json
+import os
 
 class BusinessMapLLM(ReportLLM):
     """Configuração específica do LLM para relatórios de Business Map"""
     
     def __init__(self):
         config = LLMConfig(
-            model_name="gpt-4-turbo-preview",  # Modelo mais recente para análises complexas
+            model_name=os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo"),  # Get model from environment variable
             temperature=0.7,  # Balanceando criatividade com consistência
             max_tokens=4000,  # Limite adequado para análises detalhadas
             top_p=0.9,  # Mantendo diversidade nas respostas

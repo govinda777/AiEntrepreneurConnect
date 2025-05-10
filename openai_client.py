@@ -5,6 +5,7 @@ import time
 # The newest OpenAI model is "gpt-4o" which was released May 13, 2024.
 # Do not change this unless explicitly requested by the user
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo")  # Default to gpt-3.5-turbo if not specified
 
 try:
     from openai import OpenAI
@@ -132,7 +133,7 @@ def analyze_business(form_data):
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": "Você é um consultor de negócios especialista em análise estratégica."},
                 {"role": "user", "content": prompt}
@@ -343,7 +344,7 @@ def generate_blue_ocean_strategy(form_data):
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model=OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": "Você é um consultor especialista em Blue Ocean Strategy."},
                 {"role": "user", "content": prompt}
@@ -622,7 +623,7 @@ def analyze_seo(form_data):
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": "Você é um especialista em SEO."},
                 {"role": "user", "content": prompt}

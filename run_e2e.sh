@@ -20,7 +20,7 @@ if [ -z "$OPENAI_API_KEY" ]; then
 fi
 
 # Inicia a aplicação Streamlit em background
-streamlit run main.py &
+streamlit run main.py --server.port $STREAMLIT_PORT &
 STREAMLIT_PID=$!
 
 # Aguarda a aplicação iniciar
