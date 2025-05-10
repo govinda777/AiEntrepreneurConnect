@@ -16,6 +16,7 @@ Plataforma de análise empresarial impulsionada por IA para empreendedores, que 
 - [Configuração](#configuração)
 - [Uso](#uso)
 - [API OpenAI](#api-openai)
+- [Testes](#testes)
 - [Contribuição](#contribuição)
 
 ## 🔍 Visão Geral
@@ -40,6 +41,7 @@ graph TD
     subgraph frontend[Frontend - Streamlit]
         Main[main.py] --> Forms[forms.py]
         Main --> Dashboard[dashboard.py]
+        Main --> MetroDashboard[metro_dashboard.py]
         Main --> Utils[utils.py]
     end
     
@@ -47,16 +49,22 @@ graph TD
         API[api_client.py] --> OpenAI[openai_client.py]
         API --> ReportGen[report_generator.py]
         ReportGen --> Visualize[visualization.py]
+        Config[config.py] --> API
     end
     
     subgraph web3[Integração Web3]
         Wallet[wallet_connector.py]
     end
     
+    subgraph testing[Testes]
+        Tests[tests/] --> Cypress[cypress/]
+    end
+    
     Main --> API
     Main --> Wallet
     Forms --> API
     Dashboard --> ReportGen
+    MetroDashboard --> ReportGen
     OpenAI --> ReportGen
 ```
 
@@ -68,9 +76,11 @@ graph TD
 - **api_client.py**: Camada de abstração para APIs de serviços
 - **report_generator.py**: Geração e formatação de relatórios
 - **dashboard.py**: Interface de visualização de dados e relatórios
+- **metro_dashboard.py**: Dashboard específico para métricas de negócio
 - **visualization.py**: Geração de gráficos e visualizações de dados
 - **wallet_connector.py**: Integração com carteiras Web3
 - **utils.py**: Funções utilitárias e templates para os relatórios
+- **config.py**: Configurações do sistema e variáveis de ambiente
 
 ## ✨ Funcionalidades
 
@@ -151,6 +161,7 @@ graph LR
 - Plotly para visualizações
 - OpenAI API (opcional, sistema funciona com fallback)
 - Pacotes auxiliares: Pandas, Base64, etc.
+- Node.js (para testes com Cypress)
 
 ## 🚀 Instalação
 
@@ -164,10 +175,16 @@ pip install -r requirements.txt --index-url https://pypi.org/
 
 ## ⚙️ Configuração
 
-1. Configure as variáveis de ambiente:
-   - `OPENAI_API_KEY`: Sua chave API do OpenAI (opcional)
+1. Copie o arquivo de exemplo de ambiente:
+   ```bash
+   cp env.example .env
+   ```
 
-2. Execute a aplicação:
+2. Configure as variáveis de ambiente no arquivo `.env`:
+   - `OPENAI_API_KEY`: Sua chave API do OpenAI (opcional)
+   - Outras configurações específicas do ambiente
+
+3. Execute a aplicação:
    ```bash
    streamlit run main.py
    ```
@@ -189,6 +206,24 @@ A plataforma utiliza a API OpenAI para análise avançada de dados e geração d
 ### Templates para OpenAI
 
 Os prompts enviados para a API seguem templates estruturados que garantem consistência nos resultados. Os templates estão definidos em `utils.py` e são integrados nos prompts enviados para a API.
+
+## 🧪 Testes
+
+O projeto inclui testes automatizados em dois níveis:
+
+### Testes Python
+Execute os testes unitários com pytest:
+```bash
+pytest
+```
+
+### Testes E2E com Cypress
+Execute os testes end-to-end:
+```bash
+cd cypress
+npm install
+npx cypress run
+```
 
 ## 🤝 Contribuição
 
