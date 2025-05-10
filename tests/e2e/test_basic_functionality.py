@@ -6,17 +6,17 @@ def test_landing_page(page: Page, base_url):
     page.goto(base_url)
     
     # Check if the main title is visible
-    expect(page.get_by_text("IA do Empreendedor")).to_be_visible()
+    expect(page.get_by_role("heading", name="IA do Empreendedor")).to_be_visible()
     
     # Check if the subtitle is visible
-    expect(page.get_by_text("Transformando dados em estratégia para seu negócio")).to_be_visible()
+    expect(page.get_by_text("Transformando dados em estratégia para seu negócio").first()).to_be_visible()
     
     # Check if wallet connection buttons are present
     expect(page.get_by_role("button", name="Metamask")).to_be_visible()
     expect(page.get_by_role("button", name="WalletConnect")).to_be_visible()
     
     # Check if the welcome message is visible
-    expect(page.get_by_text("Bem-vindo à IA do Empreendedor")).to_be_visible()
+    expect(page.get_by_text("Bem-vindo à IA do Empreendedor").first()).to_be_visible()
 
 def test_navigation_after_wallet_connection(page: Page, base_url):
     """Test navigation after wallet connection"""
@@ -26,7 +26,7 @@ def test_navigation_after_wallet_connection(page: Page, base_url):
     page.get_by_role("button", name="Metamask").click()
     
     # Wait for the dashboard to appear
-    expect(page.get_by_text("Gerar Novo Relatório")).to_be_visible()
+    expect(page.get_by_text("Gerar Novo Relatório").first()).to_be_visible()
     
     # Check if all tabs are present
     expect(page.get_by_role("tab", name="Gerar Novo Relatório")).to_be_visible()
@@ -44,7 +44,7 @@ def test_report_generation_flow(page: Page, base_url):
     page.get_by_role("button", name="Gerar Mapa").click()
     
     # Check if we're on the form page
-    expect(page.get_by_text("Mapa do Seu Negócio")).to_be_visible()
+    expect(page.get_by_role("heading", name="Mapa do Seu Negócio")).to_be_visible()
     
     # Check if the back button is present
     expect(page.get_by_role("button", name="← Voltar para o Dashboard")).to_be_visible() 

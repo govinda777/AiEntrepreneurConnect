@@ -73,7 +73,7 @@ def main():
 
 def show_landing_page():
     """Display the landing page for non-connected users"""
-    st.image("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40", use_column_width=True)
+    st.image("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40", use_container_width=True)
     
     st.markdown("""
     ## Bem-vindo à IA do Empreendedor
@@ -113,7 +113,7 @@ def show_dashboard():
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.image("https://images.unsplash.com/photo-1532102522784-9e4d4d9a533c", use_column_width=True)
+            st.image("https://images.unsplash.com/photo-1532102522784-9e4d4d9a533c", use_container_width=True)
             st.subheader("Mapa do Seu Negócio")
             st.write("Visualize a situação atual da sua empresa e identifique áreas para crescimento.")
             if st.button("Gerar Mapa", key="btn_map"):
@@ -122,7 +122,7 @@ def show_dashboard():
                 st.rerun()
                 
         with col2:
-            st.image("https://images.unsplash.com/photo-1529119368496-2dfda6ec2804", use_column_width=True)
+            st.image("https://images.unsplash.com/photo-1529119368496-2dfda6ec2804", use_container_width=True)
             st.subheader("Relatório Xperience")
             st.write("Estratégia Blue Ocean para explorar novos mercados e orientar decisões estratégicas.")
             if st.button("Gerar Xperience", key="btn_xperience"):
@@ -131,7 +131,7 @@ def show_dashboard():
                 st.rerun()
                 
         with col3:
-            st.image("https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3", use_column_width=True)
+            st.image("https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3", use_container_width=True)
             st.subheader("Relatório SEO")
             st.write("Otimize sua presença online, monitorando tráfego e indicadores-chave de performance.")
             if st.button("Gerar SEO", key="btn_seo"):

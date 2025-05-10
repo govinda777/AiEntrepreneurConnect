@@ -12,7 +12,7 @@ def test_business_map_form(page: Page, base_url):
     page.get_by_role("button", name="Gerar Mapa").click()
     
     # Check form elements
-    expect(page.get_by_text("Mapa do Seu Negócio")).to_be_visible()
+    expect(page.get_by_role("heading", name="Mapa do Seu Negócio")).to_be_visible()
     
     # Fill in form fields with Xperience data
     page.get_by_label("Nome da Empresa").fill("Xperience")
@@ -23,7 +23,7 @@ def test_business_map_form(page: Page, base_url):
     page.get_by_role("button", name="Gerar Relatório").click()
     
     # Check for success message or report generation
-    expect(page.get_by_text("Gerando seu relatório")).to_be_visible()
+    expect(page.get_by_text("Gerando seu relatório").first()).to_be_visible()
 
 def test_blue_ocean_form(page: Page, base_url):
     """Test the blue ocean form functionality"""
@@ -36,7 +36,7 @@ def test_blue_ocean_form(page: Page, base_url):
     page.get_by_role("button", name="Gerar Xperience").click()
     
     # Check form elements
-    expect(page.get_by_text("Relatório Xperience (Blue Ocean)")).to_be_visible()
+    expect(page.get_by_role("heading", name="Relatório Xperience (Blue Ocean)")).to_be_visible()
     
     # Fill in form fields with Xperience data
     page.get_by_label("Nome da Empresa").fill("Xperience")
@@ -47,7 +47,7 @@ def test_blue_ocean_form(page: Page, base_url):
     page.get_by_role("button", name="Gerar Relatório").click()
     
     # Check for success message or report generation
-    expect(page.get_by_text("Gerando seu relatório")).to_be_visible()
+    expect(page.get_by_text("Gerando seu relatório").first()).to_be_visible()
 
 def test_seo_form(page: Page, base_url):
     """Test the SEO form functionality"""
@@ -60,7 +60,7 @@ def test_seo_form(page: Page, base_url):
     page.get_by_role("button", name="Gerar SEO").click()
     
     # Check form elements
-    expect(page.get_by_text("Relatório SEO")).to_be_visible()
+    expect(page.get_by_role("heading", name="Relatório SEO")).to_be_visible()
     
     # Fill in form fields with Xperience data
     page.get_by_label("URL do Site").fill("https://xperiencehubs.com")
@@ -70,4 +70,4 @@ def test_seo_form(page: Page, base_url):
     page.get_by_role("button", name="Gerar Relatório").click()
     
     # Check for success message or report generation
-    expect(page.get_by_text("Gerando seu relatório")).to_be_visible() 
+    expect(page.get_by_text("Gerando seu relatório").first()).to_be_visible() 
