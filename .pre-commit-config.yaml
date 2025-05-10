@@ -3,27 +3,8 @@ repos:
     hooks:
     -   id: pytest-e2e
         name: pytest-e2e
-        entry: |
-            import subprocess
-            import time
-            import sys
-            import os
-            
-            # Inicia a aplicação Streamlit em background
-            process = subprocess.Popen(['streamlit', 'run', 'main.py'])
-            
-            # Aguarda a aplicação iniciar
-            time.sleep(5)
-            
-            # Roda os testes
-            test_result = subprocess.run(['pytest', 'tests/e2e'])
-            
-            # Mata o processo da aplicação
-            process.terminate()
-            
-            # Retorna o código de saída dos testes
-            sys.exit(test_result.returncode)
-        language: system
+        entry: ./run_e2e.sh
+        language: script
         pass_filenames: false
         always_run: true
         stages: [push] 
