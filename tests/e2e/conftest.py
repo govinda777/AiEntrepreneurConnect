@@ -17,7 +17,7 @@ def browser_context_args(browser_context_args):
 @pytest.fixture(scope="session")
 def base_url():
     """Return the base URL for the application"""
-    port = os.getenv("STREAMLIT_PORT")
+    port = os.getenv("STREAMLIT_PORT", "8501")
     return f"http://localhost:{port}"
 
 @pytest.fixture(autouse=True)
