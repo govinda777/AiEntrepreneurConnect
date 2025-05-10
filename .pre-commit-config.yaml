@@ -4,16 +4,25 @@ repos:
     -   id: pytest-e2e
         name: pytest-e2e
         entry: |
-            #!/bin/bash
+            import subprocess
+            import time
+            import sys
+            import os
+            
             # Inicia a aplicação Streamlit em background
-            streamlit run main.py &
-            STREAMLIT_PID=$!
+            process = subprocess.Popen(['streamlit', 'run', 'main.py'])
+            
             # Aguarda a aplicação iniciar
-            sleep 5
+            time.sleep(5)
+            
             # Roda os testes
-            pytest tests/e2e
+            test_result = subprocess.run(['pytest', 'tests/e2e'])
+            
             # Mata o processo da aplicação
-            kill $STREAMLIT_PID
+            process.terminate()
+            
+            # Retorna o código de saída dos testes
+            sys.exit(test_result.returncode)
         language: system
         pass_filenames: false
         always_run: true
