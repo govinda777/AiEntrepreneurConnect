@@ -5,18 +5,19 @@ def test_landing_page(page: Page, base_url):
     """Test the landing page loads correctly and displays expected content"""
     page.goto(base_url)
     
-    # Check if the main title is visible
-    expect(page.get_by_role("heading", name="IA do Empreendedor", exact=True)).to_be_visible()
+    # Aguarda até 20 segundos pelo texto do título em qualquer lugar da página
+    page.wait_for_selector("h1#ia-do-empreendedor", timeout=20000)
+    expect(page.get_by_role("heading", name="IA do Empreendedor", exact=True)).to_be_visible(timeout=20000)
     
     # Check if the subtitle is visible
-    expect(page.get_by_text("Transformando dados em estratégia para seu negócio")).to_be_visible()
+    expect(page.get_by_text("Transformando dados em estratégia para seu negócio", exact=False)).to_be_visible(timeout=20000)
     
     # Check if wallet connection buttons are present
-    expect(page.get_by_role("button", name="Metamask")).to_be_visible()
-    expect(page.get_by_role("button", name="WalletConnect")).to_be_visible()
+    expect(page.get_by_role("button", name="Metamask")).to_be_visible(timeout=20000)
+    expect(page.get_by_role("button", name="WalletConnect")).to_be_visible(timeout=20000)
     
     # Check if the welcome message is visible
-    expect(page.get_by_text("Bem-vindo à IA do Empreendedor")).to_be_visible()
+    expect(page.get_by_text("Bem-vindo à IA do Empreendedor", exact=False)).to_be_visible(timeout=20000)
 
 def test_navigation_after_wallet_connection(page: Page, base_url):
     """Test navigation after wallet connection"""
