@@ -15,6 +15,18 @@ except Exception as e:
     print(f"Erro ao inicializar o cliente OpenAI: {e}")
     OPENAI_AVAILABLE = False
 
+def log_prompt(prompt, system_prompt=""):
+    """
+    Log the prompt being sent to OpenAI API
+    """
+    print("\n🤖 Enviando prompt para OpenAI:")
+    if system_prompt:
+        print("\nSystem prompt:")
+        print(system_prompt)
+    print("\nUser prompt:")
+    print(prompt)
+    print("\n---")
+
 def analyze_business(form_data):
     """
     Analyze business data using OpenAI's GPT model
@@ -167,10 +179,12 @@ def analyze_business(form_data):
     """
     
     try:
+        system_prompt = "Você é um consultor de negócios especialista em análise estratégica."
+        log_prompt(prompt, system_prompt)
         response = client.chat.completions.create(
             model=OPENAI_MODEL,
             messages=[
-                {"role": "system", "content": "Você é um consultor de negócios especialista em análise estratégica."},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ],
             response_format={"type": "json_object"}
@@ -394,10 +408,12 @@ def generate_blue_ocean_strategy(form_data):
     """
     
     try:
+        system_prompt = "Você é um consultor especialista em Blue Ocean Strategy."
+        log_prompt(prompt, system_prompt)
         response = client.chat.completions.create(
             model=OPENAI_MODEL,
             messages=[
-                {"role": "system", "content": "Você é um consultor especialista em Blue Ocean Strategy."},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ],
             response_format={"type": "json_object"}
@@ -673,10 +689,12 @@ def analyze_seo(form_data):
     """
     
     try:
+        system_prompt = "Você é um especialista em SEO."
+        log_prompt(prompt, system_prompt)
         response = client.chat.completions.create(
             model=OPENAI_MODEL,
             messages=[
-                {"role": "system", "content": "Você é um especialista em SEO."},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ],
             response_format={"type": "json_object"}
