@@ -11,7 +11,7 @@ from forms import (
     render_blue_ocean_form, 
     render_seo_form
 )
-from report_generator import generate_report, generate_sample_reports
+from report_generator import generate_report
 from utils import load_css, set_page_config, display_report
 
 # Cache configuration
@@ -192,12 +192,21 @@ def show_report_form():
             return
         
         # Process the report generation
-        with st.spinner("Gerando seu relatório... Por favor, aguarde."):
+        progress_text = "Preparando seu relatório personalizado..."
+        progress_bar = st.progress(0, text=progress_text)
+        
+        try:
+            # Update progress to show we're starting
+            progress_bar.progress(10, text="Iniciando análise dos dados...")
+            
             # Generate the report and update token balance
             report = generate_report(
                 report_type=st.session_state.selected_report_type,
                 form_data=st.session_state.form_data
             )
+            
+            # Update progress to show we're almost done
+            progress_bar.progress(80, text="Finalizando a geração do relatório...")
             
             # Add report to session state
             st.session_state.reports.append(report)
@@ -205,9 +214,20 @@ def show_report_form():
             # Deduct token
             st.session_state.token_balance -= 1
             
+            # Show completion
+            progress_bar.progress(100, text="Relatório gerado com sucesso! ✨")
+            
             # Navigate to report view
             st.session_state.current_page = "report"
             st.rerun()
+            
+        except Exception as e:
+            st.error(f"Erro ao gerar relatório: {str(e)}")
+            progress_bar.empty()
+        finally:
+            # Clean up the progress bar if we're not redirecting
+            if st.session_state.current_page != "report":
+                progress_bar.empty()
 
 def show_report():
     """Display the most recently generated report"""
@@ -226,10 +246,5 @@ def show_report():
         st.rerun()
 
 if __name__ == "__main__":
-    # Generate sample reports for testing
-    if 'initialized' not in st.session_state:
-        generate_sample_reports()
-        st.session_state.initialized = True
-    
     # Run the app
     main()

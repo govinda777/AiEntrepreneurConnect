@@ -18,7 +18,7 @@ class AIClient:
         
         This uses OpenAI's GPT models to generate insights and recommendations
         """
-        with st.spinner("Analisando dados do negócio..."):
+        with st.spinner("Analisando dados do seu negócio e gerando insights... ⏳"):
             return openai_client.analyze_business(data)
     
     def generate_blue_ocean_strategy(self, data):
@@ -27,7 +27,7 @@ class AIClient:
         
         This uses OpenAI's GPT models to create a Blue Ocean strategy
         """
-        with st.spinner("Gerando estratégia Blue Ocean..."):
+        with st.spinner("Gerando estratégia de diferenciação e inovação... ⚡"):
             return openai_client.generate_blue_ocean_strategy(data)
     
     def analyze_seo(self, data):
@@ -36,5 +36,5 @@ class AIClient:
         
         This uses OpenAI's GPT models to analyze SEO data and make recommendations
         """
-        with st.spinner("Analisando dados de SEO..."):
+        with st.spinner("Analisando dados de SEO e otimizando presença digital... 🔍"):
             return openai_client.analyze_seo(data)

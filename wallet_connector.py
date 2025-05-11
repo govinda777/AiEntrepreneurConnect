@@ -40,49 +40,18 @@ def init_contracts():
 
 def connect_wallet(wallet_type):
     """
-    Conectar à carteira Web3
+    Simula a conexão de uma carteira e retorna um endereço
     """
-    try:
-        # Verificar se a carteira está disponível
-        if wallet_type == "metamask":
-            if not w3.is_connected():
-                st.error("Não foi possível conectar à rede Arbitrum. Verifique sua conexão.")
-                return False
-            
-            # Em um ambiente real, isso seria feito via injeção do provider pelo MetaMask
-            # Para este exemplo, vamos usar uma chave privada de teste
-            private_key = os.getenv('PRIVATE_KEY')
-            if not private_key:
-                st.error("Chave privada não configurada")
-                return False
-            
-            account = Account.from_key(private_key)
-            wallet_address = account.address
-        else:  # walletconnect
-            st.error("WalletConnect ainda não implementado")
-            return False
-        
-        # Inicializar contratos
-        token_contract, payment_system_contract = init_contracts()
-        if not token_contract or not payment_system_contract:
-            st.error("Erro ao inicializar contratos")
-            return False
-        
-        # Salvar informações na sessão
-        st.session_state.wallet_connected = True
-        st.session_state.wallet_address = wallet_address
-        st.session_state.token_contract = token_contract
-        st.session_state.payment_system_contract = payment_system_contract
-        
-        # Buscar saldo de tokens
-        fetch_token_balance()
-        
-        st.success(f"Conectado com sucesso via {wallet_type.capitalize()}!")
-        return True
-        
-    except Exception as e:
-        st.error(f"Erro ao conectar carteira: {str(e)}")
-        return False
+    # Endereço simulado
+    wallet_address = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+    
+    # Salvar informações na sessão
+    st.session_state.wallet_connected = True
+    st.session_state.wallet_address = wallet_address
+    st.session_state.token_balance = 5  # Começa com 5 tokens
+    
+    st.success(f"Conectado em modo de simulação via {wallet_type.capitalize()}!")
+    return True
 
 def disconnect_wallet():
     """Desconectar a carteira"""

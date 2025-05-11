@@ -186,7 +186,7 @@ pip install -r requirements.txt --index-url https://pypi.org/
 
 3. Execute a aplicação:
    ```bash
-   streamlit run main.py
+   streamlit run main.py --server.port 5001
    ```
 
 ## 🖥️ Uso
