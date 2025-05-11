@@ -81,7 +81,23 @@ def analyze_business(form_data):
                         "Estabelecer processo de inovação contínua"
                     ]
                 }
-            ]
+            ],
+            # Dados para os gráficos
+            "categories": ['Inovação', 'Marketing', 'Operações', 'Finanças', 'Atendimento', 'Produto'],
+            "values": [7, 6, 8, 7, 9, 8],
+            "market_data": {
+                'Qualidade': 8,
+                'Preço': 7,
+                'Atendimento': 9,
+                'Inovação': 8,
+                'Alcance': 6
+            },
+            "growth_data": {
+                'Q1': 100,
+                'Q2': 120,
+                'Q3': 150,
+                'Q4': 200
+            }
         }
     # Create a prompt with the form data
     business_name = form_data.get('business_name', 'Empresa')
@@ -111,7 +127,7 @@ def analyze_business(form_data):
     - Estágio de crescimento: {growth_stage}
     
     TAREFA:
-    Gere uma análise SWOT completa e 3 recomendações estratégicas detalhadas. 
+    Gere uma análise SWOT completa, 3 recomendações estratégicas detalhadas e dados para visualizações gráficas.
     As recomendações devem ser específicas para o contexto da empresa e incluir ações concretas.
     
     Organize a resposta em JSON no seguinte formato:
@@ -127,8 +143,27 @@ def analyze_business(form_data):
                 "action_items": ["ação 1", "ação 2", "ação 3"]
             }},
             ...
-        ]
+        ],
+        "categories": ["categoria 1", "categoria 2", ...],
+        "values": [valor1, valor2, ...],
+        "market_data": {{
+            "categoria1": valor1,
+            "categoria2": valor2,
+            ...
+        }},
+        "growth_data": {{
+            "Q1": valor1,
+            "Q2": valor2,
+            "Q3": valor3,
+            "Q4": valor4
+        }}
     }}
+    
+    Os dados para visualizações devem seguir estas regras:
+    - categories: 6 categorias principais do negócio (ex: Inovação, Marketing, etc)
+    - values: valores de 0 a 10 para cada categoria
+    - market_data: 5 fatores de comparação com o mercado e seus valores de 0 a 10
+    - growth_data: projeção de crescimento em 4 trimestres, começando em 100
     """
     
     try:
@@ -196,7 +231,23 @@ def analyze_business(form_data):
                         "Estabelecer processo de inovação contínua"
                     ]
                 }
-            ]
+            ],
+            # Dados para os gráficos
+            "categories": ['Inovação', 'Marketing', 'Operações', 'Finanças', 'Atendimento', 'Produto'],
+            "values": [7, 6, 8, 7, 9, 8],
+            "market_data": {
+                'Qualidade': 8,
+                'Preço': 7,
+                'Atendimento': 9,
+                'Inovação': 8,
+                'Alcance': 6
+            },
+            "growth_data": {
+                'Q1': 100,
+                'Q2': 120,
+                'Q3': 150,
+                'Q4': 200
+            }
         }
 
 def generate_blue_ocean_strategy(form_data):

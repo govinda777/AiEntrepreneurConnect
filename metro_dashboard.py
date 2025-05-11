@@ -243,45 +243,61 @@ def render_metro_dashboard():
                 # Extract categories and values from first report's radar chart
                 first_report = business_map_reports[0]
                 if 'radar_chart' in first_report['visualizations']:
-                    # If we have multiple reports, average the values
-                    categories = ['Produto', 'Marketing', 'Operações', 'Financeiro', 'Inovação', 'Pessoas']
-                    agg_values = []
-                    
-                    # If we have actual values, use them
-                    if len(business_map_reports) > 1:
-                        # Use a template for now (in a real app we'd aggregate the actual data)
-                        agg_values = [7.5, 6.8, 7.2, 6.5, 8.1, 6.9]
-                    else:
-                        # Use the values from the first report
-                        try:
-                            # Get data from the plotly figure
-                            radar_chart = first_report['visualizations']['radar_chart']
-                            agg_values = radar_chart.data[0].r
-                        except:
-                            # Fallback values
-                            agg_values = [7.5, 6.8, 7.2, 6.5, 8.1, 6.9]
-                    
-                    # Create radar chart
-                    fig = go.Figure()
-                    
-                    fig.add_trace(go.Scatterpolar(
-                        r=agg_values,
-                        theta=categories,
-                        fill='toself',
-                        name='Desempenho Médio'
-                    ))
-                    
-                    fig.update_layout(
-                        polar=dict(
-                            radialaxis=dict(
-                                visible=True,
-                                range=[0, 10]
-                            )
-                        ),
-                        margin=dict(l=10, r=10, t=30, b=10)
-                    )
-                    
-                    st.plotly_chart(fig, use_container_width=True)
+                    # Get data from the first report
+                    try:
+                        # Get data from the plotly figure
+                        radar_chart = first_report['visualizations']['radar_chart']
+                        categories = first_report.get('categories', ['Produto', 'Marketing', 'Operações', 'Financeiro', 'Inovação', 'Pessoas'])
+                        values = first_report.get('values', [7.5, 6.8, 7.2, 6.5, 8.1, 6.9])
+                        
+                        # Create radar chart
+                        fig = go.Figure()
+                        
+                        fig.add_trace(go.Scatterpolar(
+                            r=values,
+                            theta=categories,
+                            fill='toself',
+                            name='Desempenho Médio'
+                        ))
+                        
+                        fig.update_layout(
+                            polar=dict(
+                                radialaxis=dict(
+                                    visible=True,
+                                    range=[0, 10]
+                                )
+                            ),
+                            margin=dict(l=10, r=10, t=30, b=10)
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
+                    except Exception as e:
+                        st.error(f"Erro ao renderizar o gráfico: {str(e)}")
+                        st.write("Usando valores padrão para o gráfico")
+                        # Use default values
+                        categories = ['Produto', 'Marketing', 'Operações', 'Financeiro', 'Inovação', 'Pessoas']
+                        values = [7.5, 6.8, 7.2, 6.5, 8.1, 6.9]
+                        
+                        fig = go.Figure()
+                        
+                        fig.add_trace(go.Scatterpolar(
+                            r=values,
+                            theta=categories,
+                            fill='toself',
+                            name='Desempenho Médio'
+                        ))
+                        
+                        fig.update_layout(
+                            polar=dict(
+                                radialaxis=dict(
+                                    visible=True,
+                                    range=[0, 10]
+                                )
+                            ),
+                            margin=dict(l=10, r=10, t=30, b=10)
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
             
             st.markdown('</div>', unsafe_allow_html=True)
     
@@ -298,54 +314,64 @@ def render_metro_dashboard():
             industry_values = [8, 5, 4, 6, 5, 6]
             
             # Create strategy canvas
-            fig = go.Figure()
-            
-            fig.add_trace(go.Scatter(
-                x=factors,
-                y=your_values,
-                mode='lines+markers',
-                name='Sua Empresa',
-                line=dict(color='blue', width=4)
-            ))
-            
-            fig.add_trace(go.Scatter(
-                x=factors,
-                y=industry_values,
-                mode='lines+markers',
-                name='Concorrentes',
-                line=dict(color='red', width=4)
-            ))
-            
-            fig.update_layout(
-                title="Canvas Estratégico: Sua Empresa vs. Concorrentes",
-                xaxis_title="Fatores de Competição",
-                yaxis_title="Nível de Oferta",
-                yaxis=dict(range=[0, 10]),
-                margin=dict(l=10, r=10, t=50, b=50)
-            )
-            
-            col1, col2 = st.columns([3, 1])
-            
-            with col1:
+            try:
+                market_data = first_report.get('market_data', {
+                    'Qualidade': 8,
+                    'Preço': 7,
+                    'Atendimento': 9,
+                    'Inovação': 8,
+                    'Alcance': 6
+                })
+                
+                fig = go.Figure()
+                
+                fig.add_trace(go.Bar(
+                    x=list(market_data.keys()),
+                    y=list(market_data.values()),
+                    name='Comparação com o Mercado',
+                    marker_color='rgb(55, 83, 109)'
+                ))
+                
+                fig.update_layout(
+                    title="Comparação com o Mercado",
+                    xaxis_title="Categorias",
+                    yaxis_title="Valores",
+                    yaxis=dict(range=[0, 10]),
+                    margin=dict(l=10, r=10, t=50, b=50)
+                )
+                
                 st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"Erro ao renderizar o gráfico de comparação com o mercado: {str(e)}")
             
-            with col2:
-                st.markdown("#### Framework ERRC")
-                st.markdown("**Eliminar:**")
-                st.markdown("- Funcionalidades complexas")
-                st.markdown("- Processos burocráticos")
+            try:
+                growth_data = first_report.get('growth_data', {
+                    'Q1': 100,
+                    'Q2': 120,
+                    'Q3': 150,
+                    'Q4': 200
+                })
                 
-                st.markdown("**Reduzir:**")
-                st.markdown("- Custos operacionais")
-                st.markdown("- Tempo de implementação")
+                fig = go.Figure()
                 
-                st.markdown("**Aumentar:**")
-                st.markdown("- Experiência do usuário")
-                st.markdown("- Valor percebido")
+                fig.add_trace(go.Scatter(
+                    x=list(growth_data.keys()),
+                    y=list(growth_data.values()),
+                    mode='lines+markers',
+                    name='Potencial de Crescimento',
+                    line=dict(color='rgb(26, 118, 255)', width=3)
+                ))
                 
-                st.markdown("**Criar:**")
-                st.markdown("- Modelo de precificação baseado em resultados")
-                st.markdown("- Comunidade de usuários")
+                fig.update_layout(
+                    title="Potencial de Crescimento",
+                    xaxis_title="Período",
+                    yaxis_title="Crescimento (%)",
+                    margin=dict(l=10, r=10, t=50, b=50)
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"Erro ao renderizar o gráfico de potencial de crescimento: {str(e)}")
         
         st.markdown('</div>', unsafe_allow_html=True)
     
