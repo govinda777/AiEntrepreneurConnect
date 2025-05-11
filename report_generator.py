@@ -48,6 +48,42 @@ def generate_report(report_type, form_data):
         else:
             raise ValueError(f"Tipo de relatório inválido: {report_type}")
         
+        # Ensure recommendations are properly structured
+        recommendations = ai_analysis.get('recommendations', [])
+        if not recommendations:
+            # Create default recommendation if none exist
+            recommendations = [{
+                "title": "Recomendação Geral",
+                "description": "Com base na análise dos dados fornecidos, recomendamos uma revisão detalhada da estratégia atual.",
+                "action_items": [
+                    "Realizar análise aprofundada do mercado",
+                    "Identificar oportunidades de melhoria",
+                    "Desenvolver plano de ação específico"
+                ]
+            }]
+        else:
+            # Ensure each recommendation has the required structure
+            structured_recommendations = []
+            for rec in recommendations:
+                if isinstance(rec, dict):
+                    structured_rec = {
+                        "title": rec.get('title', 'Recomendação'),
+                        "description": rec.get('description', 'Descrição não fornecida'),
+                        "action_items": rec.get('action_items', [])
+                    }
+                else:
+                    # If recommendation is a string, create a structured version
+                    structured_rec = {
+                        "title": "Recomendação",
+                        "description": str(rec),
+                        "action_items": []
+                    }
+                structured_recommendations.append(structured_rec)
+            recommendations = structured_recommendations
+        
+        # Update AI analysis with structured recommendations
+        ai_analysis['recommendations'] = recommendations
+        
         # Create base report structure
         report = {
             "id": report_id,
@@ -55,7 +91,9 @@ def generate_report(report_type, form_data):
             "report_type": report_type,
             "report_type_display": report_type_display,
             "form_data": form_data,
-            "ai_analysis": ai_analysis
+            "ai_analysis": ai_analysis,
+            "recommendations": recommendations,  # Add recommendations at top level
+            "conclusion": ai_analysis.get('conclusion', 'Análise concluída com sucesso.')
         }
         
         # Add report-specific data and visualizations
