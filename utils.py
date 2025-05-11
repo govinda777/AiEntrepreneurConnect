@@ -171,21 +171,31 @@ def generate_radar_chart(categories, values, title):
 
 def generate_bar_chart(x_data, y_data, title, x_label, y_label):
     """Generate a bar chart using Plotly"""
+    df = pd.DataFrame({
+        x_label: x_data,
+        y_label: y_data
+    })
+    
     fig = px.bar(
-        x=x_data, 
-        y=y_data, 
-        title=title,
-        labels={'x': x_label, 'y': y_label}
+        df,
+        x=x_label,
+        y=y_label,
+        title=title
     )
     return fig
 
 def generate_line_chart(x_data, y_data, title, x_label, y_label):
     """Generate a line chart using Plotly"""
+    df = pd.DataFrame({
+        x_label: x_data,
+        y_label: y_data
+    })
+    
     fig = px.line(
-        x=x_data, 
-        y=y_data, 
-        title=title,
-        labels={'x': x_label, 'y': y_label}
+        df,
+        x=x_label,
+        y=y_label,
+        title=title
     )
     return fig
 

@@ -89,12 +89,18 @@ def _generate_business_map_report(form_data, ai_analysis):
                 "Desempenho por Área"
             ),
             "market_comparison": generate_bar_chart(
-                ai_analysis.get('market_data', {}),
-                "Comparação com o Mercado"
+                list(ai_analysis.get('market_data', {}).keys()),
+                list(ai_analysis.get('market_data', {}).values()),
+                "Comparação com o Mercado",
+                "Categorias",
+                "Valores"
             ),
             "growth_potential": generate_line_chart(
-                ai_analysis.get('growth_data', {}),
-                "Potencial de Crescimento"
+                list(ai_analysis.get('growth_data', {}).keys()),
+                list(ai_analysis.get('growth_data', {}).values()),
+                "Potencial de Crescimento",
+                "Período",
+                "Crescimento (%)"
             )
         }
     }
