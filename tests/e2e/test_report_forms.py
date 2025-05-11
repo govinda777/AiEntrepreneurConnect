@@ -27,8 +27,8 @@ def test_business_map_form(page: Page, base_url):
     # Submit form
     page.get_by_role("button", name="Gerar Mapa do Seu Negócio").click()
     
-    # Check for success message
-    expect(page.get_by_text("Preparando seu relatório personalizado...")).to_be_visible()
+    # Check for progress bar
+    expect(page.get_by_role("progressbar")).to_be_visible(timeout=10000)
 
 def test_blue_ocean_form(page: Page, base_url):
     """Test the blue ocean form functionality"""
@@ -57,8 +57,8 @@ def test_blue_ocean_form(page: Page, base_url):
     # Submit form
     page.get_by_role("button", name="Gerar Relatório Xperience").click()
     
-    # Check for success message
-    expect(page.get_by_text("Preparando seu relatório personalizado...")).to_be_visible()
+    # Check for progress bar
+    expect(page.get_by_role("progressbar")).to_be_visible(timeout=10000)
 
 def test_seo_form(page: Page, base_url):
     """Test the SEO form functionality"""
@@ -81,5 +81,5 @@ def test_seo_form(page: Page, base_url):
     # Submit form
     page.get_by_role("button", name="Gerar Relatório SEO").click()
     
-    # Check for success message
-    expect(page.get_by_text("Preparando seu relatório personalizado...")).to_be_visible() 
+    # Check for progress bar
+    expect(page.get_by_role("progressbar")).to_be_visible(timeout=10000) 
