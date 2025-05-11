@@ -57,7 +57,7 @@ def test_navigation_after_wallet_connection(page: Page, base_url):
     page.get_by_role("button", name="Metamask").click()
     
     # Wait for the dashboard to appear
-    expect(page.get_by_text("Gerar Novo Relatório")).to_be_visible()
+    expect(page.get_by_role("tab", name="Gerar Novo Relatório")).to_be_visible()
     
     # Check if all tabs are present
     expect(page.get_by_role("tab", name="Gerar Novo Relatório")).to_be_visible()
