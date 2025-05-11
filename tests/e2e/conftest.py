@@ -23,6 +23,6 @@ def base_url():
 @pytest.fixture(autouse=True)
 def setup_page(page, base_url):
     """Setup page with base URL and common configurations"""
-    page.set_default_timeout(30000)  # 30 seconds timeout
-    page.set_default_navigation_timeout(30000)
+    page.set_default_timeout(60000)  # 60 seconds timeout
+    page.set_default_navigation_timeout(60000)  # 60 seconds navigation timeout
     return page 

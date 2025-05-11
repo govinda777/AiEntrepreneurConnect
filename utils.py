@@ -98,9 +98,32 @@ def set_page_config():
 
 def load_css():
     """Load custom CSS for the app"""
-    # This function is here for future customization if needed
-    # As per guidelines, we're using Streamlit's default styling
-    pass
+    st.markdown("""
+        <style>
+        .stButton button {
+            width: 100%;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-weight: 600;
+            margin: 4px 0;
+        }
+        
+        h1[role="heading"] {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        button[role="button"] {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button[role="button"]:hover {
+            opacity: 0.9;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
 def format_wallet_address(address):
     """Format wallet address for display by truncating the middle part"""

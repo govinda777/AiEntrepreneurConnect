@@ -215,15 +215,10 @@ O projeto inclui testes automatizados em dois níveis:
 Execute os testes unitários com pytest:
 ```bash
 pytest
+
+pytest tests/e2e/test_basic_functionality.py::test_landing_page -v
 ```
 
-### Testes E2E com Cypress
-Execute os testes end-to-end:
-```bash
-cd cypress
-npm install
-npx cypress run
-```
 
 ## 🤝 Contribuição
 

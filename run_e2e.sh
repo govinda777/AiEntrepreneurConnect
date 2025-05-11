@@ -19,12 +19,35 @@ if [ -z "$OPENAI_API_KEY" ]; then
     exit 1
 fi
 
+# Define a porta padrão se não estiver definida
+STREAMLIT_PORT=${STREAMLIT_PORT:-5001}
+
+# Função para verificar se o servidor está rodando
+check_server() {
+    for i in {1..60}; do
+        if curl -s "http://localhost:${STREAMLIT_PORT}/_stcore/health" > /dev/null; then
+            echo "Servidor Streamlit está rodando na porta ${STREAMLIT_PORT}"
+            # Aguarda mais 5 segundos para garantir que a aplicação está totalmente carregada
+            sleep 5
+            return 0
+        fi
+        echo "Aguardando servidor iniciar... (tentativa $i/60)"
+        sleep 2
+    done
+    echo "Erro: Servidor não iniciou após 120 segundos"
+    return 1
+}
+
 # Inicia a aplicação Streamlit em background
-streamlit run main.py --server.port $STREAMLIT_PORT &
+echo "Iniciando servidor Streamlit na porta ${STREAMLIT_PORT}..."
+streamlit run main.py --server.port $STREAMLIT_PORT --server.headless true &
 STREAMLIT_PID=$!
 
-# Aguarda a aplicação iniciar
-sleep 5
+# Aguarda o servidor iniciar
+if ! check_server; then
+    kill $STREAMLIT_PID
+    exit 1
+fi
 
 # Roda os testes
 echo "Rodando testes e2e..."

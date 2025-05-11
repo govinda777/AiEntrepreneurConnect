@@ -1,10 +1,6 @@
 import streamlit as st
-import time
-import pandas as pd
-from PIL import Image
-import base64
-from io import BytesIO
 import os
+from functools import lru_cache
 
 # Import custom modules
 from wallet_connector import connect_wallet, check_token_balance, disconnect_wallet
@@ -17,6 +13,18 @@ from forms import (
 )
 from report_generator import generate_report, generate_sample_reports
 from utils import load_css, set_page_config, display_report
+
+# Cache configuration
+@lru_cache(maxsize=10)
+def get_image_url(image_type):
+    """Cache image URLs to avoid repeated lookups"""
+    images = {
+        'landing': "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40",
+        'business_map': "https://images.unsplash.com/photo-1532102522784-9e4d4d9a533c",
+        'xperience': "https://images.unsplash.com/photo-1529119368496-2dfda6ec2804",
+        'seo': "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3"
+    }
+    return images.get(image_type)
 
 # Page configuration
 set_page_config()
@@ -73,7 +81,7 @@ def main():
 
 def show_landing_page():
     """Display the landing page for non-connected users"""
-    st.image("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40", use_container_width=True)
+    st.image(get_image_url('landing'), use_container_width=True)
     
     st.markdown("""
     ## Bem-vindo à IA do Empreendedor
@@ -113,7 +121,7 @@ def show_dashboard():
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.image("https://images.unsplash.com/photo-1532102522784-9e4d4d9a533c", use_container_width=True)
+            st.image(get_image_url('business_map'), use_container_width=True)
             st.subheader("Mapa do Seu Negócio")
             st.write("Visualize a situação atual da sua empresa e identifique áreas para crescimento.")
             if st.button("Gerar Mapa", key="btn_map"):
@@ -122,7 +130,7 @@ def show_dashboard():
                 st.rerun()
                 
         with col2:
-            st.image("https://images.unsplash.com/photo-1529119368496-2dfda6ec2804", use_container_width=True)
+            st.image(get_image_url('xperience'), use_container_width=True)
             st.subheader("Relatório Xperience")
             st.write("Estratégia Blue Ocean para explorar novos mercados e orientar decisões estratégicas.")
             if st.button("Gerar Xperience", key="btn_xperience"):
@@ -131,7 +139,7 @@ def show_dashboard():
                 st.rerun()
                 
         with col3:
-            st.image("https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3", use_container_width=True)
+            st.image(get_image_url('seo'), use_container_width=True)
             st.subheader("Relatório SEO")
             st.write("Otimize sua presença online, monitorando tráfego e indicadores-chave de performance.")
             if st.button("Gerar SEO", key="btn_seo"):
@@ -141,7 +149,6 @@ def show_dashboard():
     
     with tab2:
         st.header("Meus Relatórios")
-        
         if not st.session_state.reports:
             st.info("Você ainda não gerou nenhum relatório. Gere seu primeiro relatório na aba 'Gerar Novo Relatório'.")
         else:
@@ -150,7 +157,6 @@ def show_dashboard():
     with tab3:
         st.header("Dashboard de Insights do Mercado")
         st.write("Visualize insights consolidados de todos os seus relatórios em um único painel.")
-        
         if not st.session_state.reports:
             st.info("Você ainda não gerou nenhum relatório. Gere seu primeiro relatório na aba 'Gerar Novo Relatório' para obter insights de mercado.")
         else:
@@ -187,12 +193,6 @@ def show_report_form():
         
         # Process the report generation
         with st.spinner("Gerando seu relatório... Por favor, aguarde."):
-            # Simulate processing time (in a real app, this would be the actual API processing)
-            progress_bar = st.progress(0)
-            for i in range(100):
-                time.sleep(0.05)
-                progress_bar.progress(i + 1)
-            
             # Generate the report and update token balance
             report = generate_report(
                 report_type=st.session_state.selected_report_type,
